@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000</color>
+    <color name="background_dark">#1E1F22</color>
+    <color name="textHintColor">#989898</color>
+    <color name="textColorWhite">#ECEDEE</color>
+    <color name="textColorDark">#1A1A1A</color>
+    <color name="buttonColorWhite">#ECEDEE</color>
+    <color name="buttonColorPurple">#845EC2</color>
+    <color name="tintColor">#D65DB1</color>
+    <color name="cat">#B0A8B9</color>
+</resources>

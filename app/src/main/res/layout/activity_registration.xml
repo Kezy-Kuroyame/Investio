@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".Registration">
+
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:scaleType="centerCrop"
+        android:padding="10sp"
+        android:fontFamily="monospace"
+        android:backgroundTint="@color/background_dark"
+        android:src="@drawable/back"
+        app:tint="@color/buttonColorWhite"
+        android:contentDescription="@string/backButton"/>
+
+    <TextView
+        android:id="@+id/registrationTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registration_text"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/textColorWhite"
+        android:layout_marginTop="55sp"/>
+
+    <EditText
+        android:id="@+id/registrationEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/registrationTextView"
+        android:layout_marginTop="30sp"
+        android:layout_marginHorizontal="35sp"
+        android:hint="@string/email_hint"
+        android:textColor="@color/textColorWhite"
+        android:textSize="20sp"
+        android:textColorHint="@color/textHintColor"
+        android:inputType="textEmailAddress"
+        android:backgroundTint="@color/tintColor"
+
+        />
+
+    <EditText
+        android:id="@+id/registrationPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="25sp"
+        android:layout_below="@id/registrationEmailAddress"
+        android:layout_marginHorizontal="35sp"
+        android:hint="@string/input_password"
+        android:textColor="@color/textColorWhite"
+        android:textColorHint="@color/textHintColor"
+        android:textSize="20sp"
+        android:backgroundTint="@color/tintColor"
+        android:inputType="textPassword"
+        />
+
+    <EditText
+        android:id="@+id/registrationPasswordConfirmed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="25sp"
+        android:layout_below="@id/registrationPassword"
+
+        android:layout_marginHorizontal="35sp"
+        android:hint="@string/confirmed_password"
+        android:textColor="@color/textColorWhite"
+        android:textColorHint="@color/textHintColor"
+        android:textSize="20sp"
+        android:backgroundTint="@color/tintColor"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="35sp"
+        android:backgroundTint="@color/buttonColorPurple"
+        android:layout_below="@id/registrationPasswordConfirmed"
+        android:textSize="20sp"
+        android:layout_marginTop="25sp"
+        android:text="@string/register_button" />
+
+
+</RelativeLayout>

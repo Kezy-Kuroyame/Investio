@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/textEnterPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="@string/login"
+        android:textAlignment="center"
+        android:textColor="@color/textColorWhite"
+        android:layout_below="@id/loginCatHand"
+        android:textSize="30sp"
+        android:layout_marginTop="25sp"/>
+
+    <EditText
+        android:id="@+id/loginEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/textEnterPassword"
+        android:layout_marginTop="30sp"
+        android:layout_marginHorizontal="35sp"
+        android:hint="@string/email_hint"
+        android:textColor="@color/textColorWhite"
+        android:textSize="20sp"
+        android:textColorHint="@color/textHintColor"
+        android:inputType="textEmailAddress"
+        android:backgroundTint="@color/tintColor"
+        />
+
+    <Button
+        android:id="@+id/buttonLoginIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="35sp"
+        android:textSize="20sp"
+        android:text="@string/login_in_button"
+        android:backgroundTint="@color/buttonColorWhite"
+        android:textColor="@color/textColorDark"
+        android:layout_below="@id/loginEmailAddress"
+        android:layout_marginTop="30sp"
+        />
+
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="35sp"
+        android:textColor="@color/textColorWhite"
+        android:backgroundTint="@color/buttonColorPurple"
+        android:text="@string/registration_button"
+        android:textSize="20sp"
+        android:layout_below="@id/buttonLoginIn"
+        android:layout_marginTop="15sp"/>
+
+    <ImageView
+        android:id="@+id/loginCatHand"
+        android:layout_width="75sp"
+        android:layout_height="75sp"
+        app:srcCompat="@drawable/catHand"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25sp"
+        app:tint="@color/cat"
+        />
+
+</RelativeLayout>
