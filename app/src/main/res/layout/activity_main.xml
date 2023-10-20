@@ -65,10 +65,10 @@
         android:id="@+id/loginCatHand"
         android:layout_width="75sp"
         android:layout_height="75sp"
-        app:srcCompat="@drawable/catHand"
+        app:srcCompat="@drawable/cathand"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25sp"
         app:tint="@color/cat"
-        />
+        android:contentDescription="@string/cathand" />
 
 </RelativeLayout>

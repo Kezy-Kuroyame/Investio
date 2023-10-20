@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextClock
+import android.widget.TextView
 
 class ActivityPasswordLogging : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +15,8 @@ class ActivityPasswordLogging : AppCompatActivity() {
 
         val buttonContinueLoginIn = findViewById<Button>(R.id.buttonContinueLoginIn)
         val buttonBack = findViewById<ImageButton>(R.id.buttonLoginBack)
-//        val arguments: Bundle =
+        val exampleMain = findViewById<TextView>(R.id.exampleEmail)
+        exampleMain.text = intent.getStringExtra("mail")
 
         buttonBack.setOnClickListener {
             backToLoginIn()

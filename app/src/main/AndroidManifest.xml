@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Empty_views_activity"
         tools:targetApi="31">
         <activity
-            android:name=".Registration"
+            android:name=".RegistrationActivity"
             android:exported="false" />
         <activity
             android:name=".ActivityPasswordLogging"

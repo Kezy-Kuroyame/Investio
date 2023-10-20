@@ -16,19 +16,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val buttonLoginIn = findViewById<Button>(R.id.buttonLoginIn)
-//        val buttonRegister = findViewById<Button>(R.id.buttonRegister)
+        val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val loginEmailAddress = findViewById<EditText>(R.id.loginEmailAddress)
-        val drawable = resources.getDrawable(R.drawable.catHand)
-        loginEmailAddress.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable, null, null, null)
-
 
         buttonLoginIn.setOnClickListener(){ loginIn(loginEmailAddress) }
+        buttonRegister.setOnClickListener(){ register() }
     }
 
     fun loginIn(loginEmailAddress: EditText){
         val intent = Intent(this, ActivityPasswordLogging::class.java)
 
-        intent.putExtra("mail", loginEmailAddress.text)
+        intent.putExtra("mail", loginEmailAddress.text.toString())
+        startActivity(intent)
+    }
+
+    fun register(){
+        val intent = Intent(this, RegistrationActivity::class.java)
         startActivity(intent)
     }
 }

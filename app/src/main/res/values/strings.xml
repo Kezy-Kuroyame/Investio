@@ -17,7 +17,8 @@
     <string name="registration_text">Регистрация</string>
     <string name="input_password">Введите пароль</string>
     <string name="confirmed_password">Повторите пароль</string>
-    <string name="register_button">Зарегитсрироваться</string>
+    <string name="register_button">Зарегистрироваться</string>
+    <string name="cathand">cathand</string>
 
 
 </resources>
