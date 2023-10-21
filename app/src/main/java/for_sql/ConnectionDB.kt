@@ -2,32 +2,37 @@ package for_sql
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLException
 
+class ConnectionDB {
+    private val url = "jdbc:postgresql://localhost:5432/postgres/investment"
+    private val username = "postgres"
+    private val password = "200319792003saa2003"
+    private var connection: Connection? = null
 
-//    private const val URL = "192.168.56.1"
-//    private var retrofit: Retrofit? = null
-//    fun getConnection(): Retrofit? {
-//        if (retrofit == null) {
-//            retrofit =
-//                Retrofit.Builder().baseUrl(URL).addConverterFactory(GsonConverterFactory.create())
-//                    .build()
-//        }
-//        return retrofit
-//    }
+    init {
+        try {
+            connection = DriverManager.getConnection(url, username, password)
+            if (connection != null) {
+                println("Соединение с базой данных установлено")
+            }
+        } catch (e: SQLException) {
+            println("Ошибка при установлении соединения с базой данных: ${e.message}")
+        }
+    }
 
-public class ConnectionDB{
-//      val url = "jdbc:postgresql://localhost/investment"
-//      val connection = DriverManager.getConnection(url, "postgres", "12345")
-//    val statement = connection.createStatement()
-//    val resultSet = statement.executeQuery("""SELECT id, name, email, id_password, date
-//FROM public."ref_User";""")
-    fun prrr(): String{
-        val url = "jdbc:postgresql://localhost/investment"
-        val connection = DriverManager.getConnection(url, "postgres", "200319792003saa2003")
-    //    val statement = connection.createStatement()
-    //    val resultSet = statement.executeQuery("""SELECT id, name, email, id_password, date
-    //FROM public."ref_User";""")
+    fun closeConnection() {
+        try {
+            connection?.close()
+            println("Соединение с базой данных закрыто")
+        } catch (e: SQLException) {
+            println("Ошибка при закрытии соединения: ${e.message}")
+        }
+    }
+
+    fun prrr(): String {
         return "aaaa"
     }
 }
