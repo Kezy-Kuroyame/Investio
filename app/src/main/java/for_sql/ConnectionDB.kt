@@ -1,7 +1,4 @@
 package for_sql
-
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -32,7 +29,12 @@ class ConnectionDB {
         }
     }
 
-    fun prrr(): String {
-        return "aaaa"
+    fun isDatabaseConnected(): Boolean {
+        try {
+            connection = DriverManager.getConnection(url, username, password)
+            return true
+        } catch (e: SQLException) {
+            return false
+        }
     }
 }

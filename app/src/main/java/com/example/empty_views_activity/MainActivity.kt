@@ -21,7 +21,15 @@ class MainActivity : AppCompatActivity() {
         val loginEmailAddress = findViewById<EditText>(R.id.loginEmailAddress)
 
         val probe = findViewById<TextView>(R.id.probe)
-        probe.text = ConnectionDB().prrr()
+
+        val connectionDB = ConnectionDB()
+
+        if (connectionDB.isDatabaseConnected()) {
+            probe.text = "Соединение с базой данных установлено"
+        } else {
+            probe.text = "Ошибка при установлении соединения с базой данных"
+        }
+
         buttonLoginIn.setOnClickListener(){ loginIn(loginEmailAddress) }
         buttonRegister.setOnClickListener(){ register() }
 
