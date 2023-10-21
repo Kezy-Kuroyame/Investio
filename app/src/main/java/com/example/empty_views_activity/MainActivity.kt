@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import for_sql.ConnectionDB
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +20,11 @@ class MainActivity : AppCompatActivity() {
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val loginEmailAddress = findViewById<EditText>(R.id.loginEmailAddress)
 
+        val probe = findViewById<TextView>(R.id.probe)
+        probe.text = ConnectionDB().prrr()
         buttonLoginIn.setOnClickListener(){ loginIn(loginEmailAddress) }
         buttonRegister.setOnClickListener(){ register() }
+
     }
 
     fun loginIn(loginEmailAddress: EditText){
@@ -34,4 +38,5 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, RegistrationActivity::class.java)
         startActivity(intent)
     }
+
 }

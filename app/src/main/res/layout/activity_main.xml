@@ -71,4 +71,10 @@
         app:tint="@color/cat"
         android:contentDescription="@string/cathand" />
 
+    <TextView
+        android:id="@+id/probe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
 </RelativeLayout>
