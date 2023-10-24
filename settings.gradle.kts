@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "empty_views_activity"
+rootProject.name = "Investio"
 include(":app")
  

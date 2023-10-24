@@ -2,7 +2,7 @@
     <!-- Activity main strings -->
     <string name="app_name">empty_views_activity</string>
     <string name="login">Вход в Investio</string>
-    <string name="email_hint">Введите Email</string>
+    <string name="email_hint">Email</string>
     <string name="login_in_button">Войти</string>
     <string name="registration_button">Зарегистрироваться</string>
 
