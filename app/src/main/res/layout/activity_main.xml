@@ -20,36 +20,21 @@
         android:textSize="30sp"
         android:layout_marginTop="25sp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <EditText
+        android:id="@+id/loginEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textEnterPassword"
-        android:id="@+id/layoutEmailAddress"
-        android:layout_marginTop="20sp"
+        android:ems="10"
+        android:layout_below="@+id/textEnterPassword"
+        android:layout_marginTop="30sp"
         android:layout_marginHorizontal="35sp"
-        app:boxStrokeColor="@color/cat"
+        android:hint="@string/email_hint"
+        android:textColor="@color/textColorWhite"
+        android:textSize="20sp"
         android:textColorHint="@color/textHintColor"
-        app:hintTextColor="@color/textHintColor"
-        android:textCursorDrawable="@null"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/loginEmailAddress"
-            android:layout_width="match_parent"
-            android:textCursorDrawable="@null"
-            android:textColor="@color/textColorWhite"
-
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_below="@+id/textEnterPassword"
-            android:padding="15sp"
-            android:hint="@string/email_hint"
-            android:textSize="14sp"
-            android:inputType="textEmailAddress"
-            android:backgroundTint="@color/tintColor"
-
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+        android:inputType="textEmailAddress"
+        android:backgroundTint="@color/tintColor"
+        />
 
     <Button
         android:id="@+id/buttonLoginIn"
@@ -60,7 +45,7 @@
         android:text="@string/login_in_button"
         android:backgroundTint="@color/buttonColorWhite"
         android:textColor="@color/textColorDark"
-        android:layout_below="@id/layoutEmailAddress"
+        android:layout_below="@id/loginEmailAddress"
         android:layout_marginTop="30sp"
         />
 
@@ -80,12 +65,16 @@
         android:id="@+id/loginCatHand"
         android:layout_width="75sp"
         android:layout_height="75sp"
-        app:srcCompat="@drawable/cat_hand"
+        app:srcCompat="@drawable/cathand"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25sp"
         app:tint="@color/cat"
         android:contentDescription="@string/cathand" />
 
-
+    <TextView
+        android:id="@+id/probe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
 </RelativeLayout>
