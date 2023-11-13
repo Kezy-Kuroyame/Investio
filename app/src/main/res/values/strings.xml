@@ -19,6 +19,8 @@
     <string name="confirmed_password">Повторите пароль</string>
     <string name="register_button">Зарегистрироваться</string>
     <string name="cathand">cathand</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
 
 
 </resources>
