@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,6 +28,10 @@ import com.example.empty_views_activity.ui.theme.colorSecondary
 
 @Composable
 fun LogingPasswordScreen(navController: NavController) {
+    val password = remember{
+        mutableStateOf("")
+    }
+
     Surface(color = colorSecondary,
         modifier = Modifier
             .fillMaxSize()
@@ -43,7 +49,8 @@ fun LogingPasswordScreen(navController: NavController) {
           NormalTextComponent(value = stringResource(id = R.string.example_email))
           Spacer(modifier = Modifier.height(15.dp))
           PasswordFieldComponent(labelValue = stringResource(id = R.string.input_password),
-              painterResource = painterResource(id = R.drawable.lock))
+              painterResource = painterResource(id = R.drawable.lock),
+              rememberValue = password)
           Spacer(modifier = Modifier.height(20.dp))
           ButtonColorfulComponent(
               value = stringResource(id = R.string.login_in_button),

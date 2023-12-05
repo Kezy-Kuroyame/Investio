@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,12 +23,22 @@ import com.example.empty_views_activity.components.ButtonBack
 import com.example.empty_views_activity.components.ButtonColorfulComponent
 import com.example.empty_views_activity.components.HeadingTextComponent
 import com.example.empty_views_activity.components.PasswordFieldComponent
-import com.example.empty_views_activity.components.TextFieldComponent
+import com.example.empty_views_activity.components.EmailFieldComponent
 import com.example.empty_views_activity.navigation.Route
 import com.example.empty_views_activity.ui.theme.colorSecondary
 
 @Composable
 fun SignUpScreen (navController: NavController){
+    val email = remember{
+        mutableStateOf("")
+    }
+    val login = remember{
+        mutableStateOf("")
+    }
+    val password = remember{
+        mutableStateOf("")
+    }
+
     Surface (
         color = colorSecondary,
         modifier = Modifier
@@ -42,17 +54,20 @@ fun SignUpScreen (navController: NavController){
             .padding(30.dp)) {
             Spacer(modifier = Modifier.height(50.dp))
             HeadingTextComponent(value = stringResource(id = R.string.registration_text))
-            TextFieldComponent(
+            EmailFieldComponent(
                 labelValue = stringResource(id = R.string.email_hint),
-                painterResource(id = R.drawable.mail)
+                painterResource(id = R.drawable.mail),
+                rememberValue = email
             )
             PasswordFieldComponent(
                 labelValue = stringResource(id = R.string.input_password),
-                painterResource = painterResource(id = R.drawable.lock)
+                painterResource = painterResource(id = R.drawable.lock),
+                rememberValue = login
             )
             PasswordFieldComponent(
                 labelValue = stringResource(id = R.string.confirmed_password),
-                painterResource = painterResource(id = R.drawable.lock)
+                painterResource = painterResource(id = R.drawable.lock),
+                rememberValue = password
             )
             Spacer(modifier = Modifier.height(30.dp))
             ButtonColorfulComponent(

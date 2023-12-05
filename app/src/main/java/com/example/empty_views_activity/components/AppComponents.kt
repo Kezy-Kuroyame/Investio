@@ -15,17 +15,21 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,18 +45,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.empty_views_activity.R
-import com.example.empty_views_activity.navigation.Route
-import com.example.empty_views_activity.ui.theme.colorCat
+import com.example.empty_views_activity.buttons.LoginInClick
 import com.example.empty_views_activity.ui.theme.colorPrimary
 import com.example.empty_views_activity.ui.theme.colorPurple
 import com.example.empty_views_activity.ui.theme.colorTextDark
 import com.example.empty_views_activity.ui.theme.colorTintPink
 import com.example.empty_views_activity.ui.theme.colorWhite
 import com.example.empty_views_activity.ui.theme.textHintColor
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -107,10 +115,10 @@ fun HeadingTextComponent(value:String){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldComponent(labelValue: String, painterResource: Painter){
-
-    val textValue = remember{
-        mutableStateOf("")
+fun EmailFieldComponent(labelValue: String, painterResource: Painter, rememberValue: MutableState<String>){
+    
+    val isError = remember{
+        mutableStateOf(false)
     }
 
     OutlinedTextField(
@@ -128,23 +136,34 @@ fun TextFieldComponent(labelValue: String, painterResource: Painter){
             textColor = colorWhite
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        value = textValue.value,
+        value = rememberValue.value,
         shape = RoundedCornerShape(10.dp),
         onValueChange = {
-            textValue.value = it
+            rememberValue.value = it
         },
+
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "",
                 modifier = Modifier.size(23.dp))
         },
-        textStyle = TextStyle(fontSize = 18.sp)
+        textStyle = TextStyle(fontSize = 18.sp),
+        isError = isError.value,
+        supportingText = {
+            if (isError.value){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Почта ${rememberValue.value} не найдена",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
     )
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordFieldComponent(labelValue: String, painterResource: Painter){
+fun PasswordFieldComponent(labelValue: String, painterResource: Painter, rememberValue: MutableState<String>){
 
     val password = remember{
         mutableStateOf("")
@@ -204,8 +223,11 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter){
 }
 
 @Composable
-fun ButtonColorfulComponent(value: String, route: String, navController: NavController){
-    Button(onClick = {navController.navigate(route = route)},
+fun ButtonColorfulComponent(value: String,
+                            route: String,
+                            navController: NavController,
+                            rememberValue: MutableList<MutableState<String>>? = null){
+    Button(onClick = {navController.navigate(route = route); },
     modifier = Modifier
         .fillMaxWidth()
         .heightIn(48.dp),
@@ -230,9 +252,34 @@ fun ButtonColorfulComponent(value: String, route: String, navController: NavCont
     }
 }
 
+// Кнопка входа
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun ButtonWhiteComponent(value: String, route: String, navController: NavController){
-    Button(onClick = {navController.navigate(route = route)},
+fun LoginInButton(value: String,
+                  route: String,
+                  navController: NavController,
+                  rememberValue: MutableState<String>,
+                  ){
+    val isError = remember {
+        mutableStateOf(false)
+    }
+    if (isError.value){
+        MailDialog(isError)
+    }
+    val scope = rememberCoroutineScope()
+
+    Button(
+        onClick = {
+            GlobalScope.launch(Dispatchers.IO) {
+
+                if (LoginInClick(rememberValue) != -1) {
+                    navController.navigate(route = route)
+                } else {
+                    isError.value = true
+                }
+
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
@@ -264,7 +311,42 @@ fun ButtonBack(route: String, navController: NavController){
     Image(painter = painterResource(
         id = R.drawable.back),
         contentDescription = "back",
-        modifier = Modifier.size(40.dp).clickable { navController.navigate(route=route) },
+        modifier = Modifier
+            .size(40.dp)
+            .clickable { navController.navigate(route = route) },
         colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(textHintColor)
         )
+}
+
+@Composable
+fun MailDialog(isShow: MutableState<Boolean>){
+    if (isShow.value){
+        AlertDialog(
+            tonalElevation = 10.dp,
+            onDismissRequest = {isShow.value = false},
+            confirmButton = {},
+            title = {Text(
+                text = "Ошибка",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 25.sp)
+            },
+            text = {Text(
+                text = "Введённая почта неверная",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 20.sp
+                )
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun preview(){
+    val isShow = remember {
+        mutableStateOf(true)
+    }
+    com.example.empty_views_activity.components.MailDialog(isShow)
 }
