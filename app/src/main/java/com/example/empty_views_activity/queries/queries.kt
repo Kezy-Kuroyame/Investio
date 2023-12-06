@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.empty_views_activity.modules.User
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.android.Android
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
@@ -13,27 +14,37 @@ import io.ktor.http.content.TextContent
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.net.InetSocketAddress
+import java.net.Proxy
 
 /** Получения данных всех пользователей */
 suspend fun getUsers(): MutableList<User> {
-    val client = HttpClient(CIO) {
+    val client = HttpClient(Android) {
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true
                 isLenient = true
             })
         }
+        engine {
+            // this: AndroidEngineConfig
+            connectTimeout = 100_000
+            socketTimeout = 100_000
+        }
+
     }
-    val response: MutableList<User> = client.get("http://127.0.0.1:8080/user").body()
-    Log.i("Case", response.toString())
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/user")
+    Log.i("ResponseStatus", response.call.toString())
+    val users: MutableList<User> = response.body()
     client.close()
-    return response
+    return users
 }
 
 /** Получение id юзера с помощью email */
 suspend fun getIdByEmail(email: String): Int? {
 
     val users: MutableList<User> = getUsers()
+    Log.i("Case", users.toString())
 //    val emailMap = users.associate { it.email to it.id }
 //    if (emailMap[email] != null){
 //        return emailMap[email]!!.toInt()
