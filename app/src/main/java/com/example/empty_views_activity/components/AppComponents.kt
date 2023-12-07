@@ -1,11 +1,7 @@
 package com.example.empty_views_activity.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -15,9 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,11 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -50,16 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.empty_views_activity.R
-import com.example.empty_views_activity.buttons.LoginInClick
 import com.example.empty_views_activity.ui.theme.colorPrimary
 import com.example.empty_views_activity.ui.theme.colorPurple
-import com.example.empty_views_activity.ui.theme.colorTextDark
 import com.example.empty_views_activity.ui.theme.colorTintPink
 import com.example.empty_views_activity.ui.theme.colorWhite
 import com.example.empty_views_activity.ui.theme.textHintColor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 
@@ -165,10 +153,6 @@ fun EmailFieldComponent(labelValue: String, painterResource: Painter, rememberVa
 @Composable
 fun PasswordFieldComponent(labelValue: String, painterResource: Painter, rememberValue: MutableState<String>){
 
-    val password = remember{
-        mutableStateOf("")
-    }
-
     val passwordVisible = remember{
         mutableStateOf(false)
     }
@@ -177,7 +161,7 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter, remembe
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 15.dp),
-        label = { Text(text = labelValue)},
+        label = { Text(text = labelValue) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             unfocusedLabelColor = textHintColor,
             unfocusedBorderColor = colorPrimary,
@@ -188,33 +172,35 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter, remembe
             textColor = colorWhite
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        value = password.value,
+        value = rememberValue.value,
         shape = RoundedCornerShape(10.dp),
         onValueChange = {
-            password.value = it
+            rememberValue.value = it
         },
         leadingIcon = {
-            Icon(painter = painterResource, contentDescription = "",
-                modifier = Modifier.size(20.dp))
+            Icon(
+                painter = painterResource, contentDescription = "",
+                modifier = Modifier.size(20.dp)
+            )
         },
         trailingIcon = {
-            val iconImage = if(passwordVisible.value){
+            val iconImage = if (passwordVisible.value) {
                 Icons.Filled.Visibility
-            } else{
+            } else {
                 Icons.Filled.VisibilityOff
             }
 
-            var description = if(passwordVisible.value){
+            val description = if (passwordVisible.value) {
                 stringResource(id = R.string.hide_password)
-            }else{
+            } else {
                 stringResource(id = R.string.show_password)
             }
-            
+
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                 Icon(imageVector = iconImage, contentDescription = description)
             }
         },
-        visualTransformation = if(passwordVisible.value) VisualTransformation.None else
+        visualTransformation = if (passwordVisible.value) VisualTransformation.None else
             PasswordVisualTransformation(),
 
         textStyle = TextStyle(fontSize = 18.sp)
@@ -222,89 +208,6 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter, remembe
     )
 }
 
-@Composable
-fun ButtonColorfulComponent(value: String,
-                            route: String,
-                            navController: NavController,
-                            rememberValue: MutableList<MutableState<String>>? = null){
-    Button(onClick = {navController.navigate(route = route); },
-    modifier = Modifier
-        .fillMaxWidth()
-        .heightIn(48.dp),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
-    ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(48.dp)
-                .background(
-                    brush = Brush.horizontalGradient(listOf(colorPurple, colorTintPink)),
-                    shape = RoundedCornerShape(50.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ){
-            Text(text = value,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-// Кнопка входа
-@OptIn(DelicateCoroutinesApi::class)
-@Composable
-fun LoginInButton(value: String,
-                  route: String,
-                  navController: NavController,
-                  rememberValue: MutableState<String>,
-                  ){
-    val isError = remember {
-        mutableStateOf(false)
-    }
-    if (isError.value){
-        MailDialog(isError)
-    }
-    val scope = rememberCoroutineScope()
-
-    Button(
-        onClick = {
-            GlobalScope.launch(Dispatchers.IO) {
-
-                if (LoginInClick(rememberValue) != -1) {
-                    navController.navigate(route = route)
-                } else {
-                    isError.value = true
-                }
-
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(48.dp),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent),
-        border = BorderStroke(2.dp, colorPrimary),
-    ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(48.dp)
-                .background(
-                    color = colorWhite,
-                    shape = RoundedCornerShape(50.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ){
-            Text(text = value,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorTextDark
-            )
-        }
-    }
-}
 
 @Composable
 fun ButtonBack(route: String, navController: NavController){
@@ -318,33 +221,9 @@ fun ButtonBack(route: String, navController: NavController){
         )
 }
 
-@Composable
-fun MailDialog(isShow: MutableState<Boolean>){
-    if (isShow.value){
-        AlertDialog(
-            tonalElevation = 10.dp,
-            onDismissRequest = {isShow.value = false},
-            confirmButton = {},
-            title = {Text(
-                text = "Ошибка",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 25.sp)
-            },
-            text = {Text(
-                text = "Введённая почта неверная",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 20.sp
-                )
-            }
-        )
-    }
-}
-
 @Preview
 @Composable
-fun preview(){
+fun AppComponentsPreview(){
     val isShow = remember {
         mutableStateOf(true)
     }

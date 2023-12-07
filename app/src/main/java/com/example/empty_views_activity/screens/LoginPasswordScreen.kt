@@ -22,12 +22,16 @@ import com.example.empty_views_activity.R
 import com.example.empty_views_activity.components.HeadingTextComponent
 import com.example.empty_views_activity.components.*
 import com.example.empty_views_activity.components.NormalTextComponent
+import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.navigation.Route
 import com.example.empty_views_activity.ui.theme.colorSecondary
 
 
 @Composable
-fun LogingPasswordScreen(navController: NavController) {
+fun LogingPasswordScreen(
+    param: String,
+    navController: NavController
+) {
     val password = remember{
         mutableStateOf("")
     }
@@ -52,7 +56,7 @@ fun LogingPasswordScreen(navController: NavController) {
               painterResource = painterResource(id = R.drawable.lock),
               rememberValue = password)
           Spacer(modifier = Modifier.height(20.dp))
-          ButtonColorfulComponent(
+          LogIn_SignUpButton(
               value = stringResource(id = R.string.login_in_button),
               navController = navController,
               route = Route.LoginIn.route
@@ -64,5 +68,5 @@ fun LogingPasswordScreen(navController: NavController) {
 @Preview
 @Composable
 fun DefaultPreviewLogingPasswordScreen(){
-    LogingPasswordScreen(navController = rememberNavController())
+    LogingPasswordScreen(param = "", navController = rememberNavController())
 }

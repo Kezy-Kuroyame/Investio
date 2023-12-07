@@ -20,10 +20,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.empty_views_activity.R
 import com.example.empty_views_activity.components.ButtonBack
-import com.example.empty_views_activity.components.ButtonColorfulComponent
 import com.example.empty_views_activity.components.HeadingTextComponent
 import com.example.empty_views_activity.components.PasswordFieldComponent
 import com.example.empty_views_activity.components.EmailFieldComponent
+import com.example.empty_views_activity.components.SignUp_SignUpButton
 import com.example.empty_views_activity.navigation.Route
 import com.example.empty_views_activity.ui.theme.colorSecondary
 
@@ -32,10 +32,10 @@ fun SignUpScreen (navController: NavController){
     val email = remember{
         mutableStateOf("")
     }
-    val login = remember{
+    val password1 = remember{
         mutableStateOf("")
     }
-    val password = remember{
+    val password2 = remember{
         mutableStateOf("")
     }
 
@@ -62,18 +62,19 @@ fun SignUpScreen (navController: NavController){
             PasswordFieldComponent(
                 labelValue = stringResource(id = R.string.input_password),
                 painterResource = painterResource(id = R.drawable.lock),
-                rememberValue = login
+                rememberValue = password1
             )
             PasswordFieldComponent(
                 labelValue = stringResource(id = R.string.confirmed_password),
                 painterResource = painterResource(id = R.drawable.lock),
-                rememberValue = password
+                rememberValue = password2
             )
             Spacer(modifier = Modifier.height(30.dp))
-            ButtonColorfulComponent(
+            SignUp_SignUpButton(
                 value = stringResource(id = R.string.registration_button),
                 navController = navController,
-                route = Route.LoginIn.route
+                route = Route.LoginIn.route,
+                rememberValues = mutableListOf(email, password1, password2)
             )
         }
     }

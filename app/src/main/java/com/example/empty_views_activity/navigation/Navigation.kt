@@ -3,9 +3,11 @@ package com.example.empty_views_activity.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.empty_views_activity.screens.LogInScreen
 import com.example.empty_views_activity.screens.LogingPasswordScreen
 import com.example.empty_views_activity.screens.SignUpScreen
@@ -29,8 +31,17 @@ fun Navigation(){
         composable(route = Route.LoginIn.route){
             LogInScreen(navController)
         }
-        composable(route = Route.LoginInPassword.route){
-            LogingPasswordScreen(navController)
+
+        composable(
+            route = Route.LoginInPassword.route,
+            arguments = listOf(
+                navArgument("userId"){
+                    type = NavType.StringType
+                }
+            )
+        ){
+            val param = it.arguments?.getString("userId") ?: ""
+            LogingPasswordScreen(param = param, navController)
         }
         composable(route = Route.SignUp.route){
             SignUpScreen(navController)

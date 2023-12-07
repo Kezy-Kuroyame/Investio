@@ -14,7 +14,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.empty_views_activity.R
-import com.example.empty_views_activity.components.ButtonColorfulComponent
-import com.example.empty_views_activity.components.LoginInButton
+import com.example.empty_views_activity.components.LogIn_SignUpButton
+import com.example.empty_views_activity.components.LogIn_LoginInButton
 import com.example.empty_views_activity.components.HeadingTextComponent
 import com.example.empty_views_activity.components.EmailFieldComponent
 import com.example.empty_views_activity.navigation.Route
@@ -35,11 +34,12 @@ import com.example.empty_views_activity.ui.theme.colorSecondary
 
 
 @Composable
-fun LogInScreen(navController: NavController) {
+fun LogInScreen(
+    navController: NavController
+) {
     val emailValue = remember{
         mutableStateOf("")
     }
-
 
     Surface(color = colorSecondary,
         modifier = Modifier
@@ -68,14 +68,14 @@ fun LogInScreen(navController: NavController) {
                 painterResource = painterResource(id = R.drawable.mail),
                 rememberValue = emailValue)
             Spacer(modifier = Modifier.height(20.dp))
-            LoginInButton(
+            LogIn_LoginInButton(
                 value = stringResource(id = R.string.login_in_button),
                 route = Route.LoginInPassword.route,
                 navController = navController,
                 rememberValue = emailValue
             )
             Spacer(modifier = Modifier.height(20.dp))
-            ButtonColorfulComponent(
+            LogIn_SignUpButton(
                 value = stringResource(id = R.string.registration_text),
                 route = Route.SignUp.route,
                 navController = navController)

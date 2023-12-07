@@ -7,7 +7,7 @@ data class User(
     val id: String? = null,
     val name: String,
     val email: String,
-    val password: String,
+    val password: String, // password_id
     val create_date: String? = null
 )
 
@@ -38,4 +38,13 @@ data class Company(
     val id: String? = null,
     val name : String,
     val current_price : Double
+)
+
+/** Юзер с паролём, а не с password_id */
+@Serializable
+data class UserDetails(
+    val name: String,
+    val email: String,
+    val password: String,
+    val create_date: String? = null
 )
