@@ -1,5 +1,6 @@
 package com.example.empty_views_activity.components
 
+import android.graphics.fonts.Font
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,11 +24,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,6 +46,7 @@ import com.example.empty_views_activity.ui.theme.colorPrimary
 import com.example.empty_views_activity.ui.theme.colorPurple
 import com.example.empty_views_activity.ui.theme.colorTintPink
 import com.example.empty_views_activity.ui.theme.colorWhite
+import com.example.empty_views_activity.ui.theme.textColorWhite
 import com.example.empty_views_activity.ui.theme.textHintColor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -208,6 +212,20 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter, remembe
     )
 }
 
+@Composable
+fun HeaderPageText(value: String){
+    Text(
+        text = value,
+        modifier = Modifier,
+        style = TextStyle(
+//            brush = Brush.verticalGradient(listOf(colorPurple, colorTintPink)),
+            fontSize = 35.sp,
+            fontWeight = FontWeight.Normal,
+            color = textColorWhite
+        ),
+
+    )
+}
 
 @Composable
 fun ButtonBack(route: String, navController: NavController){

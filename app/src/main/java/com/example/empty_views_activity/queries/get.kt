@@ -1,21 +1,16 @@
 package com.example.empty_views_activity.queries
 
 import android.util.Log
+import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.modules.User
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.content.TextContent
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.net.InetSocketAddress
-import java.net.Proxy
 
 /** Получения данных всех пользователей */
 suspend fun getUsers(): MutableList<User> {
@@ -66,7 +61,6 @@ suspend fun getUserPassword(): MutableList<User> {
 
 /** Получение id юзера с помощью email */
 suspend fun getIdByEmail(email: String): String? {
-
     val users: MutableList<User> = getUsers()
     Log.i("Case", users.toString())
     val emailMap = users.associate { it.email to it.id }
@@ -78,6 +72,37 @@ suspend fun getIdByEmail(email: String): String? {
     }
 }
 
+suspend fun getPortfolios(): MutableList<Portfolio>{
+    val client = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+        engine {
+            // this: AndroidEngineConfig
+            connectTimeout = 100_000
+            socketTimeout = 100_000
+        }
+
+    }
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/portfolio")
+    Log.i("ResponseStatus", response.call.toString())
+    val portfolios: MutableList<Portfolio> = response.body()
+    client.close()
+    return portfolios
+}
+
+suspend fun countUsersPortfolio(userId: String): Int{
+    val portfolios = getPortfolios()
+    val count = portfolios.count { it.user_id == userId }
+    return count
+}
+
+suspend fun getPortfoliosNames(userId: String): List<String> {
+    return getPortfolios().filter { it.user_id == userId }.map { it.name }
+}
 /** Получение всех данных по id юзера
 suspend fun getUserById(id: String): String? {
 
@@ -92,3 +117,4 @@ suspend fun getUserById(id: String): String? {
     }
 }
 */
+

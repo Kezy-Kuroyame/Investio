@@ -1,6 +1,7 @@
 package com.example.empty_views_activity.queries
 
 import android.util.Log
+import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.modules.User
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -29,9 +30,45 @@ suspend fun postUser(email: String, password: String): Boolean {
             connectTimeout = 100_000
             socketTimeout = 100_000
         }
-
     }
     val json = Json.encodeToString(User("", email, email, password, ""))
+    try {
+        val response: HttpResponse = client.post("http://10.0.2.2:8080/user") {
+            body = TextContent(json, ContentType.Application.Json)
+        }
+    }
+    catch (e: Exception){
+        Log.e("POST", e.toString())
+        return false
+    }
+    client.close()
+    Log.i("PostUser", "OK")
+    return true
+}
+@OptIn(InternalAPI::class)
+suspend fun addPortfolio(
+    user_id: String,
+    name: String,
+    price: Double,
+    total_profit: Double,
+    profitabality: Double,
+    change_day : Double
+): Boolean
+{
+    val client = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+        engine {
+            // this: AndroidEngineConfig
+            connectTimeout = 100_000
+            socketTimeout = 100_000
+        }
+    }
+    val json = Json.encodeToString(Portfolio("", user_id, name, price, total_profit, profitabality, change_day))
     try {
         val response: HttpResponse = client.post("http://10.0.2.2:8080/user") {
             body = TextContent(json, ContentType.Application.Json)
