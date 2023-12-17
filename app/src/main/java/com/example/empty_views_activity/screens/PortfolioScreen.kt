@@ -1,64 +1,57 @@
 package com.example.empty_views_activity.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.empty_views_activity.ui.theme.colorSecondary
-import java.lang.reflect.Modifier
-import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.unit.dp
 
-import androidx.navigation.compose.rememberNavController
 import com.example.empty_views_activity.R
-import com.example.empty_views_activity.components.ButtonAdd
-import com.example.empty_views_activity.components.ButtonBack
-import com.example.empty_views_activity.components.ButtonLogOut
-import com.example.empty_views_activity.components.EmailFieldComponent
-import com.example.empty_views_activity.components.HeaderPageText
-import com.example.empty_views_activity.components.HeadingTextComponent
-import com.example.empty_views_activity.components.PasswordFieldComponent
-import com.example.empty_views_activity.components.Portfolio
-import com.example.empty_views_activity.components.SignUp_SignUpButton
-import com.example.empty_views_activity.navigation.Route
-import com.example.empty_views_activity.queries.countUsersPortfolio
-import com.example.empty_views_activity.queries.getPortfoliosNames
-import com.example.empty_views_activity.ui.theme.colorPrimary
-import com.example.empty_views_activity.ui.theme.colorPurple
-import com.example.empty_views_activity.ui.theme.colorSecondary
-import com.example.empty_views_activity.ui.theme.colorTintPink
 import com.example.empty_views_activity.ui.theme.textColorWhite
 import com.example.empty_views_activity.ui.theme.textHintColor
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @Composable
-fun PorfolioScreen(navController: NavController) {
+fun PorfolioScreen(navController: NavController, param: String) {
+
+    var userId by remember { mutableStateOf("") }
+    var portfolioName by remember { mutableStateOf("") }
+
+    // Создайте эффект для выполнения запроса при первом запуске компонента
+    LaunchedEffect(Unit) {
+        // Выполните запрос к серверу для получения id_user
+
+//        var portfolio = getPortfolioById(param)
+        userId="5"
+        portfolioName="Хуйня"
+//        var stock = getStockByPortfolioId()
+    }
+
     Surface(
         color = colorSecondary,
         modifier = androidx.compose.ui.Modifier
@@ -69,7 +62,7 @@ fun PorfolioScreen(navController: NavController) {
         Column {
             Row {
                 Box(modifier = androidx.compose.ui.Modifier.padding(0.dp, 10.dp)) {
-                    ButtonBack(route = Route.LoginIn.route, navController = navController)
+                    ButtonBackToPortfolio(route = "portfolio/${userId}", navController = navController)
                 }
                 IconButton(
                     onClick = { /* TODO add logic */ },
@@ -83,11 +76,11 @@ fun PorfolioScreen(navController: NavController) {
                     )
                 }
             }
-            Column(modifier = androidx.compose.ui.Modifier
+            Row(modifier = androidx.compose.ui.Modifier
                 .fillMaxSize()
                 .padding(30.dp)) {
-                Card (modifier = androidx.compose.ui.Modifier
-                    .fillMaxWidth()
+                Card (modifier = androidx.compose.ui.Modifier.fillMaxWidth()
+
 
                 ){
                     Box(modifier = androidx.compose.ui.Modifier
@@ -95,7 +88,7 @@ fun PorfolioScreen(navController: NavController) {
                         Column {
                             Row{
                                 Text(text="Название портфеля:  ")
-                                Text(text="1000 рублев")
+                                Text(text="${portfolioName}")
                             }
                             Row{
                                 Text(text="Общая стоимость портфеля:  ")
@@ -110,8 +103,16 @@ fun PorfolioScreen(navController: NavController) {
                     }
                 }
 
-            }
 
+            }
+//            LazyColumn (modifier = androidx.compose.ui.Modifier.fillMaxSize()){
+//                GlobalScope.launch(Dispatchers.IO) {
+//                    val names: List<String> = getPortfoliosNames(param)
+//                    items(names.size) { index ->
+//                        Portfolio(value = names[index], route = names[index], navController = navController)
+//                    }
+//                }
+//            }
 
 
         }
@@ -119,14 +120,16 @@ fun PorfolioScreen(navController: NavController) {
 }
 @Composable
 fun MainItem(){
-    Column(modifier = androidx.compose.ui.Modifier
+
+    Row(modifier = androidx.compose.ui.Modifier
         .fillMaxSize()
         .padding(30.dp)) {
         Card (modifier = androidx.compose.ui.Modifier
-            .fillMaxWidth()
+
+
         ){
             Box(modifier = androidx.compose.ui.Modifier
-                .padding(0.dp, 10.dp)){
+                .padding(10.dp, 10.dp)){
                 Column {
                     Row{
                         Text(text="Название портфеля:  ")
@@ -144,12 +147,35 @@ fun MainItem(){
 
             }
         }
+        IconButton(
+            onClick = { /* TODO add logic */ },
+            modifier = androidx.compose.ui.Modifier.padding(0.dp, 5.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "add",
+                tint = textColorWhite,
+                modifier = androidx.compose.ui.Modifier.fillMaxSize()
+            )
+        }
+
 
     }
+}
+@Composable
+fun ButtonBackToPortfolio(route: String, navController: NavController){
+    Image(painter = painterResource(
+        id = R.drawable.back),
+        contentDescription = "back",
+        modifier = androidx.compose.ui.Modifier
+            .size(40.dp)
+            .clickable { navController.navigate(route = route) },
+        colorFilter = ColorFilter.tint(textHintColor)
+    )
 }
 
 @Preview
 @Composable
 fun PorfolioScreenPreview(){
-    PorfolioScreen( navController = rememberNavController())
+    PorfolioScreen( navController = rememberNavController(), "30")
 }
