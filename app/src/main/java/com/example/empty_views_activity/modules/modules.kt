@@ -33,6 +33,7 @@ data class Portfolio (
     val change_day: Double
 )
 
+
 @Serializable
 data class Company(
     val id: String? = null,

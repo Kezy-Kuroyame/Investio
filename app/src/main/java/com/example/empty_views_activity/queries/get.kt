@@ -116,7 +116,7 @@ suspend fun getPortfolioById(id: String): Portfolio{
     return portfolio
 }
 
-suspend fun getStockByPortfolioId(id: String): Stock{
+suspend fun getStockByPortfolioId(id: String): MutableList<Stock>{
     val client = HttpClient(Android) {
         install(ContentNegotiation) {
             json(Json {
@@ -133,7 +133,7 @@ suspend fun getStockByPortfolioId(id: String): Stock{
     }
     val response: HttpResponse = client.get("http://10.0.2.2:8080/stock/${id}")
     Log.i("ResponseStatus", response.call.toString())
-    val stock: Stock = response.body()
+    val stock: MutableList<Stock> = response.body()
     client.close()
     return stock
 }

@@ -2,9 +2,13 @@ package com.example.empty_views_activity.buttons
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import com.example.empty_views_activity.components.SignUpErrorAlertDialog
+import com.example.empty_views_activity.modules.Stock
 import com.example.empty_views_activity.queries.getIdByEmail
+import com.example.empty_views_activity.queries.getStockByPortfolioId
 import com.example.empty_views_activity.queries.postUser
+import io.ktor.client.call.body
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.serialization.json.Json
 
 /** --- Страница входа ---- **/
 // Вход
@@ -60,3 +64,5 @@ suspend fun signUpClick(args: MutableList<MutableState<String>>, err: MutableLis
     }
     return false
 }
+
+
