@@ -48,7 +48,7 @@ import kotlinx.serialization.json.Json
 
 
 @Composable
-fun PorfolioScreen(navController: NavController, param: String) {
+fun PortfolioScreen(portfolioId: String, navController: NavController) {
 
     var userId by remember { mutableStateOf("") }
     var portfolioName by remember { mutableStateOf("") }
@@ -213,25 +213,25 @@ fun ButtonBackToPortfolio(route: String, navController: NavController){
     )
 }
 
-@Preview
-@Composable
-fun PorfolioScreenPreview(){
-    PorfolioScreen( navController = rememberNavController(), "30")
-}
-class MyViewModel: ViewModel() {
-
-
-    private val _data = List<Stock>()
-    val data: kotlin.collections.emptyList<Stock> get() = _data
-
-    fun fetchData() {
-        viewModelScope.launch {
-            try {
-                val result: MutableList<Stock> = getStockByPortfolioId("3")
-                _data.value = result
-            } catch (e: Exception) {
-                Log.e("Stock/portfolio/id", "Пиздец ебаный")
-            }
-        }
-    }
-}
+//@Preview
+//@Composable
+//fun PorfolioScreenPreview(){
+//    PorfolioScreen( navController = rememberNavController(), "30")
+//}
+//class MyViewModel: ViewModel() {
+//
+//
+//    private val _data = List<Stock>()
+//    val data: kotlin.collections.emptyList<Stock> get() = _data
+//
+//    fun fetchData() {
+//        viewModelScope.launch {
+//            try {
+//                val result: MutableList<Stock> = getStockByPortfolioId("3")
+//                _data.value = result
+//            } catch (e: Exception) {
+//                Log.e("Stock/portfolio/id", "Пиздец ебаный")
+//            }
+//        }
+//    }
+//}

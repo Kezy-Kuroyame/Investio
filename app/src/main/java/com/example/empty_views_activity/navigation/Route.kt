@@ -5,4 +5,5 @@ sealed class Route(val route: String) {
     data object LoginInPassword: Route(route = "login_in_password_screen/{email}")
     data object SignUp: Route(route = "sign_up_screen")
     data object Portfolios: Route(route = "portfolios/{userId}")
+    data object Portfolio: Route(route = "portfolio/{portfolioId}")
 }

@@ -54,6 +54,7 @@ import com.example.empty_views_activity.R
 import com.example.empty_views_activity.buttons.signUpClick
 import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.navigation.Route
+import com.example.empty_views_activity.queries.getPortfoliosNames
 import com.example.empty_views_activity.queries.postPortfolio
 import com.example.empty_views_activity.ui.theme.colorPrimary
 import com.example.empty_views_activity.ui.theme.colorPurple
@@ -69,13 +70,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun ButtonAdd(userId: String, navController: NavController){
+fun ButtonAdd(userId: String, navController: NavController, portfolios: MutableState<List<String>>){
     val isShowDialog = remember {
         mutableStateOf(false)
     }
 
     if (isShowDialog.value){
-        DialogWithImage(isShowDialog, userId, navController)
+        DialogCreatePortfolio(isShowDialog, userId, portfolios)
     }
 
     IconButton(
@@ -100,7 +101,8 @@ fun Portfolio(value: String,
     Button(onClick = {navController.navigate(""); },
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(48.dp),
+            .heightIn(48.dp)
+            .padding(0.dp, 0.dp, 0.dp, 15.dp),
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
@@ -111,21 +113,21 @@ fun Portfolio(value: String,
                 .background(
                     brush = Brush.linearGradient(
                         listOf(
-                            colorSecondary,
-                            colorThird,
-                            colorSecondary
+                            colorTintPink,
+                            colorPurple,
+                            colorTintPink
                         )
                     ),
                     shape = RoundedCornerShape(50.dp)
                 ),
-            contentAlignment = Alignment.CenterStart
+            contentAlignment = Alignment.Center
         ){
             Spacer(modifier = Modifier.width(50.dp))
             Text(text = value,
                 fontSize = 28.sp,
 //                fontWeight = FontWeight.Bold,
                 color = textColorWhite,
-                modifier = Modifier.padding(25.dp, 0.dp, 0.dp, 0.dp)
+                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 5.dp)
             )
         }
     }
@@ -149,11 +151,10 @@ fun ButtonLogOut(navController: NavController){
 
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
-fun DialogWithImage(
+fun DialogCreatePortfolio(
     isShow: MutableState<Boolean>,
     userId: String,
-    navController: NavController
-
+    portfolios: MutableState<List<String>>
 ) {
     val portfolioName = remember {
         mutableStateOf("")
@@ -220,13 +221,13 @@ fun DialogWithImage(
                         TextButton(onClick = {
                             GlobalScope.launch(Dispatchers.IO) {
                                 postPortfolio(userId, portfolioName.value)
+                                portfolios.value = getPortfoliosNames(userId)
+//                                navController.navigate("portfolios/${userId}")
                                 isShow.value = false
                             }
-//                            navController.navigate("portfolios/${userId}")
                         }
                         ) {
                             Text(text = "Создать")
-
                         }
                     }
                 }
@@ -242,5 +243,5 @@ fun PortfoliosScreenPreview(){
     val isShow = remember {
         mutableStateOf(true)
     }
-    com.example.empty_views_activity.components.DialogWithImage(isShow, "0", navController = rememberNavController())
+    com.example.empty_views_activity.components.Portfolio("fawfwa", navController = rememberNavController() )
 }

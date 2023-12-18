@@ -57,12 +57,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun PorfoliosScreen(userId: String, navController: NavController){
 
-    var portfolios: List<String> by remember {
-        mutableStateOf(listOf())
+    val portfolios = remember {
+        mutableStateOf(listOf<String>())
     }
 
     GlobalScope.launch(Dispatchers.IO) {
-        portfolios = getPortfoliosNames(userId)
+        portfolios.value = getPortfoliosNames(userId)
     }
     Column(
         modifier = Modifier
@@ -78,18 +78,18 @@ fun PorfoliosScreen(userId: String, navController: NavController){
         ){
             ButtonLogOut(navController)
             HeaderPageText(value = "Портфели")
-            ButtonAdd(userId, navController)
+            ButtonAdd(userId, navController, portfolios)
         }
         Spacer(modifier = Modifier.height(5.dp))
         Divider(color = textHintColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 0.dp))
         Log.i("ListPortfolios", portfolios.toString())
-        if (portfolios.isNotEmpty()) {
+        if (portfolios.value.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                items(portfolios){ item ->  Portfolio(value = item, navController = navController)}
+                items(portfolios.value){ item ->  Portfolio(value = item, navController = navController)}
             }
         }
     }
