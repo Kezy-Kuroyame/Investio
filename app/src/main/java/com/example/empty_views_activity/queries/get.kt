@@ -2,6 +2,7 @@ package com.example.empty_views_activity.queries
 
 import android.util.Log
 import com.example.empty_views_activity.modules.Portfolio
+import com.example.empty_views_activity.modules.Stock
 import com.example.empty_views_activity.modules.User
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -92,6 +93,49 @@ suspend fun getPortfolios(): MutableList<Portfolio>{
     val portfolios: MutableList<Portfolio> = response.body()
     client.close()
     return portfolios
+}
+suspend fun getPortfolioById(id: String): Portfolio{
+    val client = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+        engine {
+            // this: AndroidEngineConfig
+            connectTimeout = 100_000
+            socketTimeout = 100_000
+        }
+
+    }
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/portfolio/${id}")
+    Log.i("ResponseStatus", response.call.toString())
+    val portfolio: Portfolio = response.body()
+    client.close()
+    return portfolio
+}
+
+suspend fun getStockByPortfolioId(id: String): Stock{
+    val client = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json(Json {
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+        engine {
+            // this: AndroidEngineConfig
+            connectTimeout = 100_000
+            socketTimeout = 100_000
+        }
+
+    }
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/stock/${id}")
+    Log.i("ResponseStatus", response.call.toString())
+    val stock: Stock = response.body()
+    client.close()
+    return stock
 }
 
 suspend fun countUsersPortfolio(userId: String): Int{
