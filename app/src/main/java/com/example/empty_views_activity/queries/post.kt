@@ -45,16 +45,14 @@ suspend fun postUser(email: String, password: String): Boolean {
     Log.i("PostUser", "OK")
     return true
 }
+
 @OptIn(InternalAPI::class)
-suspend fun addPortfolio(
+suspend fun postPortfolio(
     user_id: String,
     name: String,
-    price: Double,
-    total_profit: Double,
-    profitabality: Double,
-    change_day : Double
 ): Boolean
 {
+
     val client = HttpClient(Android) {
         install(ContentNegotiation) {
             json(Json {
@@ -68,17 +66,17 @@ suspend fun addPortfolio(
             socketTimeout = 100_000
         }
     }
-    val json = Json.encodeToString(Portfolio("", user_id, name, price, total_profit, profitabality, change_day))
+    val json = Json.encodeToString(Portfolio("", user_id, name, 0.0, 0.0, 0.0, 0.0))
     try {
-        val response: HttpResponse = client.post("http://10.0.2.2:8080/user") {
+        val response: HttpResponse = client.post("http://10.0.2.2:8080/portfolio") {
             body = TextContent(json, ContentType.Application.Json)
         }
     }
     catch (e: Exception){
-        Log.e("POST", e.toString())
+        Log.e("PostPortfolio", e.toString())
         return false
     }
     client.close()
-    Log.i("PostUser", "OK")
+    Log.i("PostPortfolio", "OK")
     return true
 }

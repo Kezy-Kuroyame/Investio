@@ -68,7 +68,10 @@ fun LogIn_SignUpButton(value: String,
                        route: String,
                        navController: NavController,
                  ){
-    Button(onClick = {navController.navigate(route = route); },
+    Button(onClick = {
+        // TODO Check password
+        navController.navigate(route = route);
+                     },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
@@ -115,7 +118,7 @@ fun LogIn_LoginInButton(value: String,
         MailDialog(isError)
     }
     if (isNavigate.value){
-        navController.navigate(route = "login_in_password_screen/${id.value}")
+        navController.navigate(route = "login_in_password_screen/${rememberValue.value}")
     }
 
     Button(

@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.empty_views_activity.screens.LogInScreen
 import com.example.empty_views_activity.screens.LogingPasswordScreen
+import com.example.empty_views_activity.screens.PorfoliosScreen
 import com.example.empty_views_activity.screens.SignUpScreen
 
 @Composable
@@ -35,16 +36,29 @@ fun Navigation(){
         composable(
             route = Route.LoginInPassword.route,
             arguments = listOf(
+                navArgument("email"){
+                    type = NavType.StringType
+                }
+            )
+        ){
+            val param = it.arguments?.getString("email") ?: ""
+            LogingPasswordScreen(email = param, navController)
+        }
+
+        composable(route = Route.SignUp.route){
+            SignUpScreen(navController)
+        }
+
+        composable(
+            route = Route.Portfolios.route,
+            arguments = listOf(
                 navArgument("userId"){
                     type = NavType.StringType
                 }
             )
         ){
             val param = it.arguments?.getString("userId") ?: ""
-            LogingPasswordScreen(param = param, navController)
-        }
-        composable(route = Route.SignUp.route){
-            SignUpScreen(navController)
+            PorfoliosScreen(userId = param, navController)
         }
     }
 }

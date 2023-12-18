@@ -145,8 +145,11 @@ suspend fun countUsersPortfolio(userId: String): Int{
 }
 
 suspend fun getPortfoliosNames(userId: String): List<String> {
+    Log.i("getPortfoliosNames", "Trying")
+
     return getPortfolios().filter { it.user_id == userId }.map { it.name }
 }
+
 /** Получение всех данных по id юзера
 suspend fun getUserById(id: String): String? {
 

@@ -29,7 +29,7 @@ import com.example.empty_views_activity.ui.theme.colorSecondary
 
 @Composable
 fun LogingPasswordScreen(
-    param: String,
+    email: String,
     navController: NavController
 ) {
     val password = remember{
@@ -50,16 +50,16 @@ fun LogingPasswordScreen(
           Spacer(modifier = Modifier.height(80.dp))
           HeadingTextComponent(value = stringResource(id = R.string.enter_password))
           HintTextComponent(value = stringResource(id = R.string.enter_password_hint))
-          NormalTextComponent(value = stringResource(id = R.string.example_email))
+          NormalTextComponent(value = email)
           Spacer(modifier = Modifier.height(15.dp))
           PasswordFieldComponent(labelValue = stringResource(id = R.string.input_password),
               painterResource = painterResource(id = R.drawable.lock),
               rememberValue = password)
           Spacer(modifier = Modifier.height(20.dp))
-          LogIn_SignUpButton(
+          LogInPasswordButton(
+              email = email,
               value = stringResource(id = R.string.login_in_button),
-              navController = navController,
-              route = Route.LoginIn.route
+              navController = navController
           )
       }
     }
@@ -68,5 +68,5 @@ fun LogingPasswordScreen(
 @Preview
 @Composable
 fun DefaultPreviewLogingPasswordScreen(){
-    LogingPasswordScreen(param = "", navController = rememberNavController())
+    LogingPasswordScreen(email = "daw", navController = rememberNavController())
 }
