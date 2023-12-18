@@ -141,7 +141,7 @@ fun SignUpErrorAlertDialog(isShow: MutableState<Boolean>, header: String, conten
     }
 }
 
-// TODO разобраться с таймером 
+
 @Composable
 fun SignUpSuccessDialog(isShow: MutableState<Boolean>, navController: NavController){
     val timer = object: CountDownTimer(1000, 1000) {

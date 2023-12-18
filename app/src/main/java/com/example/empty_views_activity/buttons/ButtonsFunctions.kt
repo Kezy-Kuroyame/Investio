@@ -60,3 +60,13 @@ suspend fun signUpClick(args: MutableList<MutableState<String>>, err: MutableLis
     }
     return false
 }
+
+suspend fun LoginPasswordClick(email: String): String{
+    val id = getIdByEmail(email.lowercase())
+    if (id == null){
+        return "-1"
+    }
+    else{
+        return id
+    }
+}
