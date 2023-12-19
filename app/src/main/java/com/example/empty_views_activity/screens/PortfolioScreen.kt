@@ -216,7 +216,7 @@ fun ButtonBackToPortfolio(route: String, navController: NavController){
 //@Preview
 //@Composable
 //fun PorfolioScreenPreview(){
-//    PorfolioScreen( navController = rememberNavController(), "30")
+//    PortfolioScreen( navController = rememberNavController(), "30")
 //}
 //class MyViewModel: ViewModel() {
 //
