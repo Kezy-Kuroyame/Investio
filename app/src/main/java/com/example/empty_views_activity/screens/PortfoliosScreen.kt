@@ -38,8 +38,11 @@ import com.example.empty_views_activity.components.ButtonAdd
 import com.example.empty_views_activity.components.ButtonLogOut
 import com.example.empty_views_activity.components.HeaderPageText
 import com.example.empty_views_activity.components.Portfolio
+import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.navigation.Route
 import com.example.empty_views_activity.queries.countUsersPortfolio
+import com.example.empty_views_activity.queries.getPortfolioById
+import com.example.empty_views_activity.queries.getPortfoliosByUserId
 import com.example.empty_views_activity.queries.getPortfoliosNames
 import com.example.empty_views_activity.ui.theme.colorPrimary
 import com.example.empty_views_activity.ui.theme.colorPurple
@@ -58,11 +61,11 @@ import kotlinx.coroutines.launch
 fun PorfoliosScreen(userId: String, navController: NavController){
 
     val portfolios = remember {
-        mutableStateOf(listOf<String>())
+        mutableStateOf(listOf<Portfolio>())
     }
 
     GlobalScope.launch(Dispatchers.IO) {
-        portfolios.value = getPortfoliosNames(userId)
+        portfolios.value = getPortfoliosByUserId(userId)
     }
     Column(
         modifier = Modifier
@@ -89,7 +92,7 @@ fun PorfoliosScreen(userId: String, navController: NavController){
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                items(portfolios.value){ item ->  Portfolio(value = item, navController = navController)}
+                items(portfolios.value){ item ->  Portfolio(item, navController = navController)}
             }
         }
     }

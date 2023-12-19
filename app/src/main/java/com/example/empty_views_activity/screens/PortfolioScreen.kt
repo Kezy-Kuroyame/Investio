@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,12 +56,11 @@ fun PortfolioScreen(portfolioId: String, navController: NavController){
         mutableStateOf(Portfolio())
     }
 
-
-    GlobalScope.launch(Dispatchers.IO) {
+    LaunchedEffect(key1 = true){
         stocks.value = getStockByPortfolioId(portfolioId)
         portfolio.value = getPortfolioById(portfolioId)
     }
-
+    Log.i("CheckStocksPortfolioScreen", stocks.value.toString())
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +74,7 @@ fun PortfolioScreen(portfolioId: String, navController: NavController){
             verticalAlignment = Alignment.CenterVertically
         ){
             ButtonBackPortfolio(portfolio.value.user_id, navController)
-            HeaderPortfolio(portfolio.value)
+            HeaderPortfolio(portfolio.value, stocks)
             ButtonAddStock(portfolioId, stocks)
         }
         Spacer(modifier = Modifier.height(5.dp))

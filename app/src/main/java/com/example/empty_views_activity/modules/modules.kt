@@ -1,6 +1,7 @@
 package com.example.empty_views_activity.modules
 
 import kotlinx.serialization.Serializable
+import java.math.BigInteger
 
 @Serializable
 data class User(
@@ -31,6 +32,16 @@ data class Portfolio (
     val total_profit: Double = 0.0, // Текущая цена с изменениями
     val profitability: Double = 0.0, // Насколько изменилась
     val change_day: Double = 0.0// Насколько поменялось за день
+)
+@Serializable
+data class PortfolioPost (
+    val id: String? = null,
+    val user_id: String,
+    val name: String,
+    val price: Double, // За сколько были куплены акции
+    val total_profit: Double, // Текущая цена с изменениями
+    val profitability: Double, // Насколько изменилась
+    val change_day: Double// Насколько поменялось за день
 )
 
 

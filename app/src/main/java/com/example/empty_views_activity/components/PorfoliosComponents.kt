@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -54,6 +55,8 @@ import com.example.empty_views_activity.R
 import com.example.empty_views_activity.buttons.signUpClick
 import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.navigation.Route
+import com.example.empty_views_activity.queries.getPortfolioById
+import com.example.empty_views_activity.queries.getPortfoliosByUserId
 import com.example.empty_views_activity.queries.getPortfoliosNames
 import com.example.empty_views_activity.queries.postPortfolio
 import com.example.empty_views_activity.ui.theme.colorPrimary
@@ -70,7 +73,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun ButtonAdd(userId: String, navController: NavController, portfolios: MutableState<List<String>>){
+fun ButtonAdd(userId: String, navController: NavController, portfolios: MutableState<List<Portfolio>>){
     val isShowDialog = remember {
         mutableStateOf(false)
     }
@@ -95,10 +98,15 @@ fun ButtonAdd(userId: String, navController: NavController, portfolios: MutableS
 }
 
 @Composable
-fun Portfolio(value: String,
+fun Portfolio(portfolio: Portfolio,
               navController: NavController,){
+    val idPortfolio = remember {
+        mutableStateOf("")
+    }
 
-    Button(onClick = {navController.navigate(""); },
+    Button(onClick = {
+        navController.navigate("portfolio/${portfolio.id}")
+                     },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp)
@@ -123,7 +131,7 @@ fun Portfolio(value: String,
             contentAlignment = Alignment.Center
         ){
             Spacer(modifier = Modifier.width(50.dp))
-            Text(text = value,
+            Text(text = portfolio.name,
                 fontSize = 28.sp,
 //                fontWeight = FontWeight.Bold,
                 color = textColorWhite,
@@ -154,7 +162,7 @@ fun ButtonLogOut(navController: NavController){
 fun DialogCreatePortfolio(
     isShow: MutableState<Boolean>,
     userId: String,
-    portfolios: MutableState<List<String>>
+    portfolios: MutableState<List<Portfolio>>
 ) {
     val portfolioName = remember {
         mutableStateOf("")
@@ -221,7 +229,7 @@ fun DialogCreatePortfolio(
                         TextButton(onClick = {
                             GlobalScope.launch(Dispatchers.IO) {
                                 postPortfolio(userId, portfolioName.value)
-                                portfolios.value = getPortfoliosNames(userId)
+                                portfolios.value = getPortfoliosByUserId(userId)
 //                                navController.navigate("portfolios/${userId}")
                                 isShow.value = false
                             }
@@ -243,5 +251,5 @@ fun PortfoliosScreenPreview(){
     val isShow = remember {
         mutableStateOf(true)
     }
-    com.example.empty_views_activity.components.Portfolio("fawfwa", navController = rememberNavController() )
+//    com.example.empty_views_activity.components.Portfolio("fawfwa", navController = rememberNavController() )
 }

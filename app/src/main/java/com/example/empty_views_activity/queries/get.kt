@@ -131,8 +131,16 @@ suspend fun getStockByPortfolioId(portfolioId: String): MutableList<Stock>{
 
     }
     val response: HttpResponse = client.get("http://10.0.2.2:8080/stock/portfolio/${portfolioId}")
-    Log.i("ResponseStatus", response.call.toString())
-    val stock: MutableList<Stock> = response.body()
+
+    var stock: MutableList<Stock> = mutableListOf<Stock>()
+    if (response.status.value == 200){
+        Log.i("ResponseStatus", "Победили")
+
+        stock = response.body()
+    }
+
+    Log.e("errorStockbyPortfolioId", "Error")
+
     client.close()
     return stock
 }
@@ -147,6 +155,12 @@ suspend fun getPortfoliosNames(userId: String): List<String> {
     Log.i("getPortfoliosNames", "Trying")
 
     return getPortfolios().filter { it.user_id == userId }.map { it.name }
+}
+
+suspend fun getPortfoliosByUserId(userId: String): List<Portfolio> {
+    Log.i("getPortfoliosByUserId", "Trying")
+
+    return getPortfolios().filter { it.user_id == userId }
 }
 
 /** Получение всех данных по id юзера

@@ -52,13 +52,17 @@ import androidx.navigation.NavController
 import com.example.empty_views_activity.R
 import com.example.empty_views_activity.modules.Portfolio
 import com.example.empty_views_activity.modules.Stock
+import com.example.empty_views_activity.moexAPI.getSecuritiesModel
 import com.example.empty_views_activity.queries.getPortfoliosNames
+import com.example.empty_views_activity.queries.getStockByPortfolioId
 import com.example.empty_views_activity.queries.postPortfolio
+import com.example.empty_views_activity.queries.postStock
 import com.example.empty_views_activity.ui.theme.colorNotStonks
 import com.example.empty_views_activity.ui.theme.colorPrimary
 import com.example.empty_views_activity.ui.theme.colorPurple
 import com.example.empty_views_activity.ui.theme.colorSecondary
 import com.example.empty_views_activity.ui.theme.colorStonks
+import com.example.empty_views_activity.ui.theme.colorThird
 import com.example.empty_views_activity.ui.theme.colorTintPink
 import com.example.empty_views_activity.ui.theme.colorWhite
 import com.example.empty_views_activity.ui.theme.textColorWhite
@@ -67,6 +71,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun PortfolioInfo(){
@@ -137,17 +146,21 @@ fun StockBlock(stock: Stock){
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun HeaderPortfolio(portfolio: Portfolio){
+fun HeaderPortfolio(portfolio: Portfolio, stocks: MutableState<List<Stock>>){
     val showPortfolioStatistic = remember {
         mutableStateOf(false)
     }
 
     if (showPortfolioStatistic.value){
-        DialogPortfolioStatistic(portfolio, showPortfolioStatistic)
+        DialogPortfolioStatistic(portfolio, showPortfolioStatistic, stocks)
     }
     TextButton(
-        onClick = {showPortfolioStatistic.value = true}
+        onClick = {
+
+            showPortfolioStatistic.value = true
+        }
     ){
         Text(
             color = textColorWhite,
@@ -159,7 +172,26 @@ fun HeaderPortfolio(portfolio: Portfolio){
 }
 
 @Composable
-fun DialogPortfolioStatistic(portfolio: Portfolio, isShow: MutableState<Boolean>){
+fun DialogPortfolioStatistic(portfolio: Portfolio, isShow: MutableState<Boolean>, stocks: MutableState<List<Stock>>){
+    val currentDate = Date()
+    val calendar = Calendar.getInstance()
+    calendar.time = currentDate
+    calendar.add(Calendar.DAY_OF_MONTH, -1)
+    val newDate = calendar.time
+    val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val dateText: String = dateFormat.format(newDate)
+
+    var sumNow = 0.0
+    var sumOld = 0.0
+
+    for (stock: Stock in stocks.value){
+        val getSecure = getSecuritiesModel(tradeData = dateText, stock.name)
+        sumNow += (getSecure.value / getSecure.volume) * stock.amount
+
+        sumOld += stock.purchase_price * stock.amount
+    }
+    val profit = sumNow / sumOld * 100
+
     if (isShow.value){
         Dialog(onDismissRequest = { isShow.value = false }) {
             // Draw a rectangle shape with rounded corners inside the dialog
@@ -190,16 +222,20 @@ fun DialogPortfolioStatistic(portfolio: Portfolio, isShow: MutableState<Boolean>
                         color = textColorWhite
                     )
                     Text(
-                        text = "Цена покупки акций: ${portfolio.price}",
-                        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp)
-                    )
-                    Text(
-                        text = "Нынешняя цена акций: ${portfolio.total_profit}",
-                        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp)
+                        text = "Цена покупки акций: ${sumOld}",
+                        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
+                        color = textColorWhite
 
                     )
                     Text(
-                        text = "Профит: ${portfolio.profitability}"
+                        text = "Нынешняя цена акций: ${sumNow}",
+                        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
+                        color = textColorWhite
+
+                    )
+                    Text(
+                        text = "Профит: ${profit}%",
+                        color = textColorWhite
                     )
 
                 }
@@ -267,11 +303,11 @@ fun DialogAddStock(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .width(150.dp)
+                    .height(270.dp)
+                    .width(170.dp)
                     .padding(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = colorSecondary,
+                    containerColor = colorThird,
                 ),
                 shape = RoundedCornerShape(16.dp),
             ) {
@@ -290,16 +326,34 @@ fun DialogAddStock(
                         textAlign = TextAlign.Center,
                         color = textColorWhite
                     )
-// TODO
-//                    OutlinedTextField( name
-//                    )
+
+                    OutlinedTextField(
+                        label = {
+                            Text(text = "Name")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(90.dp, 0.dp),
+                        value = stockName.value,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            unfocusedLabelColor = textHintColor,
+                            unfocusedBorderColor = colorPrimary,
+                            focusedBorderColor = textHintColor,
+                            focusedLabelColor = colorPurple,
+                            cursorColor = textHintColor,
+                            containerColor = colorPrimary,
+                            textColor = colorWhite
+                        ),
+                        onValueChange = {stockName.value = it},
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    )
                     OutlinedTextField(
                         label = {
                                 Text(text = "amount")
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(100.dp, 0.dp),
+                            .padding(90.dp, 0.dp),
                         value = stockAmount.value,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             unfocusedLabelColor = textHintColor,
@@ -320,17 +374,17 @@ fun DialogAddStock(
                         horizontalArrangement = Arrangement.Center,
                     ) {
                         TextButton(onClick = {isShow.value = false}) {
-                            Text(text = "Отмена")
+                            Text(text = "Отмена", color = textColorWhite)
                         }
                         TextButton(onClick = {
                             GlobalScope.launch(Dispatchers.IO) {
-//                                postStock(portfolioId, nameStock, amount)
-//                                portfolios.value = getPortfoliosNames(userId)
+                                postStock(stockName.value, stockAmount.value.toInt(), portfolioId)
+                                stocks.value = getStockByPortfolioId(portfolioId)
                                 isShow.value = false
                             }
                         }
                         ) {
-                            Text(text = "Создать")
+                            Text(text = "Создать", color = textColorWhite)
                         }
                     }
                 }
@@ -397,5 +451,9 @@ fun DialogStockInfo(
 @Preview
 @Composable
 fun PreviewPortfolioComponents(){
+    val isShow = remember {
+        mutableStateOf(true)
+    }
+//    DialogAddStock(isShow, "19", )
     StockBlock(stock = Stock("0", "0", "0", 2, "YNDX", 550.0, 20.0))
 }
