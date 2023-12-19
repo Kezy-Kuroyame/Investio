@@ -107,16 +107,15 @@ suspend fun getPortfolioById(id: String): Portfolio{
             connectTimeout = 100_000
             socketTimeout = 100_000
         }
-
     }
     val response: HttpResponse = client.get("http://10.0.2.2:8080/portfolio/${id}")
-    Log.i("ResponseStatus", response.call.toString())
+    Log.i("GetPortfolioByID", response.call.toString())
     val portfolio: Portfolio = response.body()
     client.close()
     return portfolio
 }
 
-suspend fun getStockByPortfolioId(id: String): MutableList<Stock>{
+suspend fun getStockByPortfolioId(portfolioId: String): MutableList<Stock>{
     val client = HttpClient(Android) {
         install(ContentNegotiation) {
             json(Json {
@@ -131,7 +130,7 @@ suspend fun getStockByPortfolioId(id: String): MutableList<Stock>{
         }
 
     }
-    val response: HttpResponse = client.get("http://10.0.2.2:8080/stock/${id}")
+    val response: HttpResponse = client.get("http://10.0.2.2:8080/stock/portfolio/${portfolioId}")
     Log.i("ResponseStatus", response.call.toString())
     val stock: MutableList<Stock> = response.body()
     client.close()

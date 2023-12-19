@@ -14,6 +14,8 @@ val colorTextDark = Color(0xFF1A1A1A)
 val colorPurple = Color(0xFF845EC2)
 val colorTintPink = Color(0xFFD65DB1)
 val colorCat = Color(0xFFB0A8B9)
+val colorStonks = Color(0xFF3DE726)
+val colorNotStonks = Color(0xFFDB2727)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)

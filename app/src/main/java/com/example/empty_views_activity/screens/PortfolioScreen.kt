@@ -1,237 +1,99 @@
 package com.example.empty_views_activity.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.empty_views_activity.ui.theme.colorSecondary
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
-
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-
-import com.example.empty_views_activity.R
-
-import com.example.empty_views_activity.modules.Stock
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.empty_views_activity.components.ButtonAdd
+import com.example.empty_views_activity.components.ButtonAddStock
+import com.example.empty_views_activity.components.ButtonBackPortfolio
+import com.example.empty_views_activity.components.ButtonLogOut
+import com.example.empty_views_activity.components.HeaderPageText
+import com.example.empty_views_activity.components.HeaderPortfolio
+import com.example.empty_views_activity.components.Portfolio
+import com.example.empty_views_activity.components.StockBlock
+import com.example.empty_views_activity.modules.*
+import com.example.empty_views_activity.queries.getPortfolioById
+import com.example.empty_views_activity.queries.getPortfoliosNames
 import com.example.empty_views_activity.queries.getStockByPortfolioId
-import com.example.empty_views_activity.ui.theme.textColorWhite
+import com.example.empty_views_activity.ui.theme.colorSecondary
 import com.example.empty_views_activity.ui.theme.textHintColor
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun PortfolioScreen(portfolioId: String, navController: NavController) {
+fun PortfolioScreen(portfolioId: String, navController: NavController){
 
-    var userId by remember { mutableStateOf("") }
-    var portfolioName by remember { mutableStateOf("") }
-    var stocks by remember { mutableStateOf(emptyList<Stock>()) }
-    var jsonList by remember { mutableStateOf(emptyList<Stock>()) }
-
-    LaunchedEffect(Unit) {
-        userId = "5"
-        portfolioName = "Хуйня"
-        jsonList= getStockByPortfolioId("3")
-        stocks = Json.decodeFromString(jsonList.toString())
+    val stocks = remember {
+        mutableStateOf(listOf<Stock>())
+    }
+    val portfolio = remember {
+        mutableStateOf(Portfolio())
     }
 
-    Surface(
-        color = colorSecondary,
-        modifier = androidx.compose.ui.Modifier
+
+    GlobalScope.launch(Dispatchers.IO) {
+        stocks.value = getStockByPortfolioId(portfolioId)
+        portfolio.value = getPortfolioById(portfolioId)
+    }
+
+    Column(
+        modifier = Modifier
             .fillMaxSize()
             .background(colorSecondary)
 
-    ) {
-        Column {
-            Row {
-                Box(modifier = androidx.compose.ui.Modifier.padding(0.dp, 10.dp)) {
-                    ButtonBackToPortfolio(
-                        route = "portfolio/${userId}",
-                        navController = navController
-                    )
-                }
-                IconButton(
-                    onClick = { /* TODO add logic */ },
-                    modifier = androidx.compose.ui.Modifier.padding(0.dp, 5.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "add",
-                        tint = textColorWhite,
-                        modifier = androidx.compose.ui.Modifier.fillMaxSize()
-                    )
-                }
-
-            }
-            Row(
-                modifier = androidx.compose.ui.Modifier
-                    .fillMaxSize()
-                    .padding(30.dp)
-            ) {
-                Card(
-                    modifier = androidx.compose.ui.Modifier.fillMaxWidth()
-
-
-                ) {
-                    Box(
-                        modifier = androidx.compose.ui.Modifier
-                            .padding(10.dp, 10.dp)
-                    ) {
-                        Column {
-                            Row {
-                                Text(text = "Название портфеля:  ")
-                                Text(text = "${portfolioName}")
-                            }
-                            Row {
-                                Text(text = "Общая стоимость портфеля:  ")
-                                Text(text = "1000 рублев")
-                            }
-                            Row {
-                                Text(text = "Изменения за день: ")
-                                Text(text = "500 рублев")
-                            }
-                        }
-
-                    }
-                }
-
-
-            }
-            LazyColumn {
-                stocks.forEach { stock ->
-                    println("Идентификатор: ${stock.id}")
-                    println("Идентификатор портфеля: ${stock.id_portfolio}")
-                    println("Идентификатор компании: ${stock.id_company}")
-                    println("Количество: ${stock.amount}")
-                    println("Название: ${stock.name}")
-                    println("Текущая цена: ${stock.current_price}")
-                    println("Цена покупки: ${stock.purchase_price}")
-                }
-            }
-        }
-    }
-}
-@Composable
-fun StockCard(stock: Stock) {
-    Card {
-        Column {
-            Text("Идентификатор: ${stock.id}")
-            Text("Идентификатор портфеля: ${stock.id_portfolio}")
-            Text("Идентификатор компании: ${stock.id_company}")
-            Text("Количество: ${stock.amount}")
-            Text("Название: ${stock.name}")
-            Text("Текущая цена: ${stock.current_price}")
-            Text("Цена покупки: ${stock.purchase_price}")
-        }
-    }
-}
-
-
-@Composable
-fun MainItem(){
-
-    Row(modifier = androidx.compose.ui.Modifier
-        .fillMaxSize()
-        .padding(30.dp)) {
-        Card (modifier = androidx.compose.ui.Modifier
-
-
+    ){
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ){
-            Box(modifier = androidx.compose.ui.Modifier
-                .padding(10.dp, 10.dp)){
-                Column {
-                    Row{
-                        Text(text="Название портфеля:  ")
-                        Text(text="1000 рублев")
-                    }
-                    Row{
-                        Text(text="Общая стоимость портфеля:  ")
-                        Text(text="1000 рублев")
-                    }
-                    Row{
-                        Text(text="Изменения за день: ")
-                        Text(text="500 рублев")
-                    }
-                }
-
+            ButtonBackPortfolio(portfolio.value.user_id, navController)
+            HeaderPortfolio(portfolio.value)
+            ButtonAddStock(portfolioId, stocks)
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        Divider(color = textHintColor, thickness = 1.dp, modifier = Modifier.padding(horizontal = 0.dp))
+        Log.i("ListPortfolios", stocks.toString())
+        if (stocks.value.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                items(stocks.value){ item ->  StockBlock(item) }
             }
         }
-        IconButton(
-            onClick = { /* TODO add logic */ },
-            modifier = androidx.compose.ui.Modifier.padding(0.dp, 5.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "add",
-                tint = textColorWhite,
-                modifier = androidx.compose.ui.Modifier.fillMaxSize()
-            )
-        }
-
-
     }
 }
 
-
-
+@Preview
 @Composable
-fun ButtonBackToPortfolio(route: String, navController: NavController){
-    Image(painter = painterResource(
-        id = R.drawable.back),
-        contentDescription = "back",
-        modifier = androidx.compose.ui.Modifier
-            .size(40.dp)
-            .clickable { navController.navigate(route = route) },
-        colorFilter = ColorFilter.tint(textHintColor)
-    )
+fun PortfolioScreenPreview(){
+    PortfolioScreen("0", navController = rememberNavController())
 }
-
-//@Preview
-//@Composable
-//fun PorfolioScreenPreview(){
-//    PortfolioScreen( navController = rememberNavController(), "30")
-//}
-//class MyViewModel: ViewModel() {
-//
-//
-//    private val _data = List<Stock>()
-//    val data: kotlin.collections.emptyList<Stock> get() = _data
-//
-//    fun fetchData() {
-//        viewModelScope.launch {
-//            try {
-//                val result: MutableList<Stock> = getStockByPortfolioId("3")
-//                _data.value = result
-//            } catch (e: Exception) {
-//                Log.e("Stock/portfolio/id", "Пиздец ебаный")
-//            }
-//        }
-//    }
-//}

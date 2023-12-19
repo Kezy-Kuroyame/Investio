@@ -10,8 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.empty_views_activity.screens.LogInScreen
 import com.example.empty_views_activity.screens.LogingPasswordScreen
-import com.example.empty_views_activity.screens.PortfolioScreen
 import com.example.empty_views_activity.screens.PorfoliosScreen
+import com.example.empty_views_activity.screens.PortfolioScreen
 import com.example.empty_views_activity.screens.SignUpScreen
 
 @Composable

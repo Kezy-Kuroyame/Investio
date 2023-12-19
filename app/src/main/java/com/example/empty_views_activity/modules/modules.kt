@@ -25,12 +25,12 @@ data class Stock(
 @Serializable
 data class Portfolio (
     val id: String? = null,
-    val user_id: String,
-    val name: String,
-    val price: Double,
-    val total_profit: Double,
-    val profitability: Double,
-    val change_day: Double
+    val user_id: String = "0",
+    val name: String = "0",
+    val price: Double = 0.0, // За сколько были куплены акции
+    val total_profit: Double = 0.0, // Текущая цена с изменениями
+    val profitability: Double = 0.0, // Насколько изменилась
+    val change_day: Double = 0.0// Насколько поменялось за день
 )
 
 
