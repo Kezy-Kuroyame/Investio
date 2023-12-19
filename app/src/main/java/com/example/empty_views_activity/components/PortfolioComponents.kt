@@ -1,5 +1,6 @@
 package com.example.empty_views_activity.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -82,6 +85,8 @@ fun PortfolioInfo(){
 
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun StockBlock(stock: Stock){
     val isShowDialogInfo = remember {
@@ -92,14 +97,34 @@ fun StockBlock(stock: Stock){
 
     }
 
-    var color: Color = colorWhite
-    var delta = ((stock.current_price.toFloat() - stock.purchase_price.toFloat()) * stock.amount).toString()
-    if (delta.toFloat() > 0){
-        delta = "+$delta"
-        color = colorStonks
+    val color = remember {
+        mutableStateOf(colorWhite)
     }
-    else if (delta.toFloat() < 0){
-        color = colorNotStonks
+    val delta = remember {
+        mutableStateOf("")
+    }
+
+    GlobalScope.launch(Dispatchers.IO) {
+        val currentDate = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = currentDate
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val newDate = calendar.time
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateText: String = dateFormat.format(newDate)
+
+        val getSecure = getSecuritiesModel(tradeData = dateText, stock.name)
+        GlobalScope.launch ( Dispatchers.IO ) {
+            delta.value =
+                String.format("%.2f", (getSecure.value / getSecure.volume - stock.purchase_price.toFloat()) * stock.amount)
+            if (delta.value.toFloat() > 0.001) {
+                delta.value = "+${String.format("%.2f", delta.value.toFloat())}"
+                color.value = colorStonks
+            } else if (delta.value.toFloat() < (-0.01)) {
+                delta.value = String.format("%.2f", delta.value.toFloat())
+                color.value = colorNotStonks
+            }
+        }
     }
     
     Button(onClick = { isShowDialogInfo.value = true },
@@ -135,8 +160,8 @@ fun StockBlock(stock: Stock){
                     .align(Alignment.CenterStart)
             )
             Text(
-                text = delta,
-                color = color,
+                text = delta.value,
+                color = color.value,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(0.dp, 0.dp, 15.dp, 0.dp),
@@ -171,26 +196,39 @@ fun HeaderPortfolio(portfolio: Portfolio, stocks: MutableState<List<Stock>>){
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun DialogPortfolioStatistic(portfolio: Portfolio, isShow: MutableState<Boolean>, stocks: MutableState<List<Stock>>){
-    val currentDate = Date()
-    val calendar = Calendar.getInstance()
-    calendar.time = currentDate
-    calendar.add(Calendar.DAY_OF_MONTH, -1)
-    val newDate = calendar.time
-    val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    val dateText: String = dateFormat.format(newDate)
-
-    var sumNow = 0.0
-    var sumOld = 0.0
-
-    for (stock: Stock in stocks.value){
-        val getSecure = getSecuritiesModel(tradeData = dateText, stock.name)
-        sumNow += (getSecure.value / getSecure.volume) * stock.amount
-
-        sumOld += stock.purchase_price * stock.amount
+    val sumOld = remember {
+        mutableDoubleStateOf(0.0)
     }
-    val profit = sumNow / sumOld * 100
+    val sumNow = remember {
+        mutableDoubleStateOf(0.0)
+    }
+    val profit = remember {
+        mutableDoubleStateOf(0.0)
+    }
+
+
+    LaunchedEffect(key1 = true) {
+        val currentDate = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = currentDate
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val newDate = calendar.time
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateText: String = dateFormat.format(newDate)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            for (stock: Stock in stocks.value) {
+                val getSecure = getSecuritiesModel(tradeData = dateText, stock.name)
+                sumNow.doubleValue += (getSecure.value / getSecure.volume) * stock.amount
+
+                sumOld.doubleValue += stock.purchase_price * stock.amount
+            }
+            profit.doubleValue = sumNow.doubleValue.div(sumOld.doubleValue) * 100 - 100
+        }
+    }
 
     if (isShow.value){
         Dialog(onDismissRequest = { isShow.value = false }) {
@@ -222,19 +260,19 @@ fun DialogPortfolioStatistic(portfolio: Portfolio, isShow: MutableState<Boolean>
                         color = textColorWhite
                     )
                     Text(
-                        text = "Цена покупки акций: ${sumOld}",
+                        text = "Цена покупки акций: ${String.format("%.2f", sumOld.doubleValue)}",
                         modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
                         color = textColorWhite
 
                     )
                     Text(
-                        text = "Нынешняя цена акций: ${sumNow}",
+                        text = "Нынешняя цена акций: ${String.format("%.2f", sumNow.doubleValue)}",
                         modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
                         color = textColorWhite
 
                     )
                     Text(
-                        text = "Профит: ${profit}%",
+                        text = "Профит:${String.format("%.2f", profit.doubleValue)}%",
                         color = textColorWhite
                     )
 
